@@ -1,0 +1,60 @@
+import java.util.Date;
+import java.util.Scanner;
+
+public class Feedback extends Service {
+    private int feedbackID;
+    private int rating;
+    private String comments;
+    private Date feedbackDate;
+    private static int feedbackCounter = 1;
+    Scanner input = new Scanner(System.in);
+
+    public Feedback(int serviceID, int personID) {
+        super(serviceID, personID);
+        this.feedbackID = feedbackCounter++;
+        this.feedbackDate = new Date();
+    }
+
+    public int getFeedbackID() {
+        return feedbackID;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public String getComments() {
+        return comments;
+    }
+
+    public Date getFeedbackDate() {
+        return feedbackDate;
+    }
+
+    public void collectFeedback() {
+        boolean success = false;
+        while (!success) {
+            try {
+                System.out.println("How do you rate the service out of 5:");
+                rating = input.nextInt();
+
+                if (rating < 1 || rating > 5) {
+                    throw new IllegalArgumentException("Invalid rating. Please enter a number between 1 and 5.");
+                }
+
+                System.out.println("Do you have any comments?");
+                input.nextLine(); // Consume the newline character
+                comments = input.nextLine();
+                
+                feedbackDate = new Date();
+                
+                System.out.println("\nThank you for your feedback! Your feedback ID is: " + feedbackID);
+                System.out.println("Feedback Date: " + feedbackDate);
+                success = true;
+            } catch (Exception e) {
+                System.out.println("Invalid input. Try again.");
+                input.nextLine(); // Clear buffer
+            }
+        }
+    }
+}
