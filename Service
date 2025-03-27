@@ -1,0 +1,165 @@
+import java.util.Scanner;
+import java.util.Date;
+
+public class Service {
+    int serviceID;
+    int personID;
+    Date date;
+    double roomPrice;
+    double resturantPrice;
+
+    public Service(int serviceID, int personID) {
+        this.serviceID = serviceID;
+        this.personID = personID;
+        this.date = new Date();
+    }
+
+    public void setRoomPrice(double roomPrice) {
+        this.roomPrice = roomPrice;
+    }
+
+    public void setResturantPrice(double resturantPrice) {
+        this.resturantPrice = resturantPrice;
+    }
+
+    public double getRoomPrice() {
+        return roomPrice;
+    }
+
+    public double getResturantPrice() {
+        return resturantPrice;
+    }
+
+    public int getServiceID() {
+        return serviceID;
+    }
+
+    public int getPersonID() {
+        return personID;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void displayServiceInfo() {
+        System.out.println("Service ID: " + serviceID);
+        System.out.println("Person ID: " + personID);
+        System.out.println("Date: " + date);
+    }
+
+    public void roomPayment() {
+        double price = 0;
+        System.out.println("Choose a room:");
+        System.out.println("1- Single Room");
+        System.out.println("2- Double Room");
+        System.out.println("3- Twin Room");
+        System.out.println("4- Triple Room");
+        System.out.println("5- Quadruple Room");
+        
+        Scanner in = new Scanner(System.in);
+        int c = in.nextInt();
+        double basePrice = 1700;
+
+        switch (c) {
+            case 1:
+                price = basePrice;
+                break;
+            case 2:
+                price = basePrice - 250;
+                break;
+            case 3:
+                price = basePrice - 500;
+                break;
+            case 4:
+                price = basePrice - 750;
+                break;
+            case 5:
+                price = basePrice - 1000;
+                break;
+            default:
+                System.out.println("Invalid choice. Please select a valid room type.");
+                return;
+        }
+        roomPrice = price;
+        System.out.println("The price for the selected room is: " + price);
+    }
+
+    public void resturantPayment() {
+        double price = 0;
+        System.out.println("Enter the number of people:");
+        Scanner in = new Scanner(System.in);
+        int p = in.nextInt();
+        double basePrice = 70;
+        for (int i = 0; i < p; i++) {
+            price += basePrice;
+        }
+        resturantPrice = price;
+        System.out.println("The total restaurant payment is: " + price);
+    }
+    
+    
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter your ID: ");
+        int personID = scanner.nextInt();
+
+        System.out.println("Enter Service ID: ");
+        int serviceID = scanner.nextInt();
+
+        Service service = new Service(serviceID, personID);
+
+        System.out.println("Welcome! Choose a service:");
+        System.out.println("1 - Payment");
+        System.out.println("2 - Feedback");
+
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        if (choice == 1) {
+            try {
+                System.out.println("1 - Room Payment");
+                System.out.println("2 - Restaurant Payment");
+                int c = scanner.nextInt();
+                scanner.nextLine(); 
+
+                if (c == 1) {
+                    service.roomPayment();
+                } else if (c == 2) {
+                    service.resturantPayment(); 
+                } else {
+                    System.out.println("❌ Invalid choice. Please select 1 or 2.");
+                    return;
+                }
+
+                System.out.println("Choose a payment method (Credit Card / Debit Card / PayPal): ");
+                String method = scanner.nextLine().trim();
+
+                System.out.println("Enter amount to pay: ");
+                double amount = scanner.nextDouble();
+
+                try {
+                    Payment payment = new Payment(amount, method, serviceID, personID);
+                    payment.processPayment();
+                } catch (InvalidPaymentException e) {
+                    System.out.println("❌ Payment Error: " + e.getMessage());
+                }
+
+            } catch (Exception e) {
+                System.out.println("❌ Error: " + e.getMessage());
+            }
+
+        } else if (choice == 2) {
+            
+            Feedback feedback = new Feedback(serviceID, personID);
+            feedback.collectFeedback();
+        } else {
+            System.out.println("❌ Invalid choice.");
+        }
+
+        scanner.close();
+        System.out.println("✅ Thank you!");
+    }
+}
